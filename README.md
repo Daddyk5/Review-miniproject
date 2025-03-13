@@ -92,9 +92,9 @@ Admin URL: /admin/dashboard
 
 👨‍👩‍👧‍👦 Team & Contributors
 Role	Name	Email
-Project Owner	Kenneth	kenneth@example.com
+Project Owner	Kenneth	kenneth.gulmatico@hcdc.edu.ph
 Instructor/Guide	Rosselyn Cedeno	cedeno.rosselyn@gmail.com
-Collaborator	(Add More Names)	(Add their emails)
+Collaborator	Luis Joel Nujapa, James Michael Micolob
 📊 Folder Structure
 bash
 Copy
