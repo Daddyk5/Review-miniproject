@@ -1,70 +1,153 @@
-<<<<<<< HEAD
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+🎬 Movia - Movie Review System
+A modern and fully-featured Movie Review System built with Laravel 12, designed for users to review, rate, comment on movies, and manage profiles — including profile photo uploads and admin panel functionalities.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+🚀 Features
+✅ User registration and authentication (with future Social Login integration)
+✅ Browse and search movies
+✅ User movie reviews with star ratings ⭐⭐⭐⭐⭐
+✅ Comment system on movie reviews
+✅ Admin panel for managing movies, genres, reviews, and comments
+✅ User profile management with profile picture upload
+✅ Dashboard showing recommended movies and stats
+✅ Fully responsive TailwindCSS UI
+📸 Screenshots
+Login Page	Movie List	User Profile
+Coming Soon	Coming Soon	Coming Soon
+🛠️ Tech Stack
+PHP 8.2.12
+Laravel 12
+TailwindCSS
+Alpine.js
+Chart.js (for admin analytics)
+MySQL
+🧑‍💻 Setup Instructions
+1. Clone the Repository
+bash
+Copy
+Edit
+git clone https://github.com/your-username/your-repository.git
+cd your-repository
+2. Install PHP & JS Dependencies
+bash
+Copy
+Edit
+composer install
+npm install
+npm run dev
+3. Set Up Environment
+bash
+Copy
+Edit
+cp .env.example .env
+php artisan key:generate
+4. Configure .env for Database, Mail, and Social Login
+dotenv
+Copy
+Edit
+# Database
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 
-## About Laravel
+# Social Login (to be configured later)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI=
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+FACEBOOK_CLIENT_ID=
+FACEBOOK_CLIENT_SECRET=
+FACEBOOK_REDIRECT_URI=
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+GITHUB_REDIRECT_URI=
+5. Run Migrations
+bash
+Copy
+Edit
+php artisan migrate
+6. Seed Data (Optional)
+bash
+Copy
+Edit
+php artisan db:seed
+7. Run the Application
+bash
+Copy
+Edit
+php artisan serve
+⚙️ Future Social Login Setup (Placeholder)
+These social accounts are displayed on the interface but not yet linked. You can later set up OAuth and replace placeholders:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Google Login (coming soon)
+Facebook Login (coming soon)
+GitHub Login (coming soon)
+🔐 Admin Panel Access
+The admin panel allows you to manage movies, genres, reviews, and user comments. Ensure to create an admin user manually via database or seeders.
 
-## Learning Laravel
+Admin URL: /admin/dashboard
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+👨‍👩‍👧‍👦 Team & Contributors
+Role	Name	Email
+Project Owner	Kenneth	kenneth.gulmatico@hcdc.edu.ph
+Instructor/Guide	Rosselyn Cedeno	cedeno.rosselyn@gmail.com
+Collaborator	Luis Joel Nujapa, James Michael Micolob
+📊 Folder Structure
+bash
+Copy
+Edit
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Admin/
+│   │   │   ├── User/
+│   │   │   ├── SocialAuthController.php
+│   │   │   └── ProfileController.php
+│   ├── Models/
+│   │   ├── Movie.php
+│   │   ├── Review.php
+│   │   ├── Comment.php
+│   └── ...
+├── resources/views/
+│   ├── admin/
+│   ├── user/
+│   ├── layouts/
+│   └── profile/
+└── routes/web.php
+💡 To-Do (Future Enhancements)
+ Integrate working social login (Google, Facebook, GitHub)
+ Movie recommendation system based on reviews/ratings
+ Like/Dislike system for reviews and comments
+ Trending and latest movies page
+ AI-powered suggestion engine
+ Dark mode toggle 🌙
+📜 License
+This project is open-source and available under MIT License.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+📱 Social Media (Placeholders)
+Coming soon — once configured
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Platform	Placeholder Link
+Facebook	#
+Twitter	#
+Instagram	#
+🙏 Acknowledgements
+Laravel Documentation
+TailwindCSS
+Alpine.js
+Chart.js
+📦 Contribution
+Feel free to fork this repository, create issues, and submit pull requests! Let's make Movia better together. 🌟
 
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-=======
-# Riview-miniproject
->>>>>>> 1102d180e072197768aac2a43912c9acb2538985
+✅ How to Upload this to GitHub
+bash
+Copy
+Edit
+git init
+git remote add origin https://github.com/your-username/your-repository.git
+git add .
+git commit -m "Initial commit: Movia Movie Review System"
+git push -u origin main
