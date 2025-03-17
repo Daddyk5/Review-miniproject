@@ -21,7 +21,7 @@
 
     <!-- Logo / Home Link -->
     <div class="mb-8 text-center">
-        <a href="{{ route('home') }}" class="text-3xl font-bold text-purple-400 hover:text-purple-500 transition duration-300">
+        <a href="{{ route('home') }}" class="text-3xl font-bold text-yellow-400 hover:text-yellow-500 transition duration-300">
             <i class="fas fa-film"></i> {{ config('app.name', 'Movia') }}
         </a>
         <p class="mt-2 text-gray-400 text-sm">Discover, Review & Rate Movies like IMDb</p>
@@ -29,42 +29,12 @@
 
     <!-- Main Card Wrapper -->
     <div class="w-full sm:max-w-md px-8 py-6 bg-gray-800 border border-gray-700 shadow-lg rounded-lg">
-
-        <!-- Inject Form Content (Login/Register) -->
+        <!-- Inject Form Content (Login/Register/Forgot Password) -->
         @yield('content')
-
-        <!-- Divider -->
-        <div class="flex items-center my-6">
-            <hr class="flex-grow border-gray-600">
-            <span class="px-4 text-gray-400 text-sm">or continue with</span>
-            <hr class="flex-grow border-gray-600">
-        </div>
-
-        <!-- Social Logins -->
-        <div class="space-y-3">
-            <!-- Google -->
-            <a href="{{ route('social.redirect', 'google') }}"
-               class="flex items-center justify-center gap-3 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition duration-300">
-                <i class="fab fa-google"></i> Google
-            </a>
-
-            <!-- Facebook -->
-            <a href="{{ route('social.redirect', 'facebook') }}"
-               class="flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition duration-300">
-                <i class="fab fa-facebook"></i> Facebook
-            </a>
-
-            <!-- GitHub -->
-            <a href="{{ route('social.redirect', 'github') }}"
-               class="flex items-center justify-center gap-3 bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded transition duration-300">
-                <i class="fab fa-github"></i> GitHub
-            </a>
-        </div>
-
     </div>
 
     <!-- Footer (Optional) -->
-    <footer class="mt-6 text-sm text-gray-500">
+    <footer class="mt-6 text-sm text-gray-500 text-center">
         &copy; {{ date('Y') }} {{ config('app.name', 'Movia') }}. All rights reserved.
     </footer>
 

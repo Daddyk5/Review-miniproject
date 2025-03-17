@@ -18,7 +18,7 @@ class ReviewController extends Controller
     public function index(Movie $movie)
     {
         // Fetch all reviews related to the movie including user who posted
-        $reviews = $movie->reviews()->with('user')->get();
+        $reviews = $movie->reviews()->with('user')->latest()->get();
         return response()->json($reviews, 200);
     }
 
@@ -30,18 +30,20 @@ class ReviewController extends Controller
         // Validate incoming request
         $validated = $request->validate([
             'content' => 'required|string|max:1000',
-            'rating'  => 'nullable|integer|min:1|max:5',
+            'rating'  => 'required|integer|min:1|max:5', // Make rating required for consistent stats
         ]);
 
-        // Create the review with relation to movie and user
-        $review = $movie->reviews()->create([
+        // Create the review associated with movie and user
+        $movie->reviews()->create([
             'content' => $validated['content'],
-            'rating'  => $validated['rating'] ?? null,
+            'rating'  => $validated['rating'],
             'user_id' => Auth::id(), // Authenticated user
         ]);
 
-        // Return the created review with user info
-        return response()->json($review->load('user'), 201);
+        // Update movie's rating and review count
+        $this->updateMovieStats($movie);
+
+        return redirect()->back()->with('success', 'Review submitted successfully!');
     }
 
     /**
@@ -49,7 +51,6 @@ class ReviewController extends Controller
      */
     public function show(Review $review)
     {
-        // Load related user and movie
         return response()->json($review->load('user', 'movie'), 200);
     }
 
@@ -58,20 +59,20 @@ class ReviewController extends Controller
      */
     public function update(Request $request, Review $review)
     {
-        // Authorize the action, ensure only the owner can update
-        $this->authorize('update', $review);
+        $this->authorize('update', $review); // Ensure only owner can update
 
         // Validate incoming request
         $validated = $request->validate([
             'content' => 'required|string|max:1000',
-            'rating'  => 'nullable|integer|min:1|max:5',
+            'rating'  => 'required|integer|min:1|max:5', // Required to adjust movie stats
         ]);
 
-        // Update review
         $review->update($validated);
 
-        // Return updated review
-        return response()->json($review, 200);
+        // Update movie stats after review update
+        $this->updateMovieStats($review->movie);
+
+        return redirect()->back()->with('success', 'Review updated successfully!');
     }
 
     /**
@@ -79,13 +80,24 @@ class ReviewController extends Controller
      */
     public function destroy(Review $review)
     {
-        // Authorize the action, ensure only the owner can delete
-        $this->authorize('delete', $review);
+        $this->authorize('delete', $review); // Ensure only owner can delete
 
-        // Delete review
+        $movie = $review->movie; // Keep reference to movie before deleting review
         $review->delete();
 
-        // Return success message
-        return response()->json(['message' => 'Review deleted successfully'], 200);
+        // Update movie stats after deletion
+        $this->updateMovieStats($movie);
+
+        return redirect()->back()->with('success', 'Review deleted successfully!');
+    }
+
+    /**
+     * Automatically update average rating and reviews count for a movie.
+     */
+    private function updateMovieStats(Movie $movie): void
+    {
+        $movie->average_rating = $movie->reviews()->avg('rating') ?? 0;
+        $movie->reviews_count = $movie->reviews()->count();
+        $movie->save();
     }
 }

@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminGenreController;
 use App\Http\Controllers\Admin\AdminMovieController;
@@ -18,94 +17,95 @@ use App\Http\Controllers\User\UserSettingsController;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-| Here you can register web routes for your application.
-| These routes are automatically loaded by RouteServiceProvider.
+| Main routes for public, authenticated users, and admin.
 |--------------------------------------------------------------------------
 */
 
 /**
- * 🌐 Public Routes
+ * 🌐 PUBLIC ROUTES
  */
+Route::get('/', [HomeController::class, 'index'])->name('home'); // Homepage showing trending and recommended movies
+Route::get('/search', [UserController::class, 'search'])->name('movies.search'); // Search feature
 
-// Homepage (Landing Page)
-Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Public Search (Global Search for Movies)
-Route::get('/search', [UserController::class, 'search'])->name('movies.search');
 
 /**
- * ✅ Authenticated & Verified User Routes
+ * ✅ AUTHENTICATED USER ROUTES
+ * Accessible when logged in & verified
  */
 Route::middleware(['auth', 'verified'])->group(function () {
 
     /**
-     * 🎥 User Movie Browsing & Viewing
+     * 🎬 User Movies (Listing & Detail)
      */
-    Route::get('/movies', [UserController::class, 'index'])->name('movies.index');
-    Route::get('/movies/{movie}', [UserController::class, 'show'])->name('movies.show');
+    Route::get('/movies', [UserController::class, 'index'])->name('movies.index'); // List all movies
+    Route::get('/movies/{movie}', [UserController::class, 'show'])->name('movies.show'); // Single movie detail
 
     /**
-     * ⭐ User Movie Reviews (CRUD)
+     * ⭐ Reviews (User Reviews on Movies)
      */
-    Route::resource('movies.reviews', UserReviewController::class)->only(['store']);
-    Route::get('/movies/{movie}/reviews', [UserReviewController::class, 'showReviews'])->name('user.reviews');
-    Route::get('/reviews/{review}/edit', [UserReviewController::class, 'edit'])->name('reviews.edit');
-    Route::put('/reviews/{review}', [UserReviewController::class, 'update'])->name('reviews.update');
-    Route::delete('/reviews/{review}', [UserReviewController::class, 'destroy'])->name('reviews.destroy');
+    Route::resource('movies.reviews', UserReviewController::class)->only(['store']); // Add Review
+    Route::get('/movies/{movie}/reviews', [UserReviewController::class, 'showReviews'])->name('user.reviews'); // List reviews for a movie
+    Route::get('/reviews/{review}/edit', [UserReviewController::class, 'edit'])->name('reviews.edit'); // Edit Review
+    Route::put('/reviews/{review}', [UserReviewController::class, 'update'])->name('reviews.update'); // Update Review
+    Route::delete('/reviews/{review}', [UserReviewController::class, 'destroy'])->name('reviews.destroy'); // Delete Review
 
     /**
-     * 💬 User Comments on Reviews (CRUD)
+     * 💬 Comments (On Reviews)
      */
-    Route::resource('reviews.comments', UserCommentController::class)->only(['store']);
-    Route::get('/reviews/{review}/comments', [UserCommentController::class, 'showComments'])->name('user.comments');
-    Route::get('/comments/{comment}/edit', [UserCommentController::class, 'edit'])->name('comments.edit');
-    Route::put('/comments/{comment}', [UserCommentController::class, 'update'])->name('comments.update');
-    Route::delete('/comments/{comment}', [UserCommentController::class, 'destroy'])->name('comments.destroy');
+    Route::resource('reviews.comments', UserCommentController::class)->only(['store']); // Add Comment to Review
+    Route::get('/reviews/{review}/comments', [UserCommentController::class, 'showComments'])->name('user.comments'); // List comments on a review
+    Route::get('/comments/{comment}/edit', [UserCommentController::class, 'edit'])->name('comments.edit'); // Edit Comment
+    Route::put('/comments/{comment}', [UserCommentController::class, 'update'])->name('comments.update'); // Update Comment
+    Route::delete('/comments/{comment}', [UserCommentController::class, 'destroy'])->name('comments.destroy'); // Delete Comment
 
     /**
-     * ⚙️ User Settings & Profile
+     * ⚙️ User Profile & Account Settings
      */
-    Route::get('/settings', [UserSettingsController::class, 'index'])->name('settings.index');
-    Route::post('/settings/update', [UserSettingsController::class, 'update'])->name('settings.update');
-
-    // 📝 **Explicit Profile Routes**
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // User Dashboard
-    Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit'); // Edit Profile
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update'); // Update Profile
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); // Delete Account
+    Route::get('/settings', [UserSettingsController::class, 'index'])->name('settings.index'); // Account Settings Page
+    Route::post('/settings/update', [UserSettingsController::class, 'update'])->name('settings.update'); // Update Account Settings
 
     /**
-     * 🔑 Social Authentication (Google, Facebook, GitHub)
+     * 🏠 User Dashboard
      */
-    Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
-    Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
+    Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
 });
 
+
 /**
- * 🛡️ Admin Routes (Protected by 'admin' middleware)
+ * 🛡️ ADMIN ROUTES
+ * For admins only (admin middleware applied)
  */
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
-    // 🏠 Admin Dashboard
+    /**
+     * 🏠 Admin Dashboard
+     */
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    // 🎬 Genre Management (CRUD excluding show, edit, update for simplicity)
-    Route::resource('genres', AdminGenreController::class)->except(['show', 'edit', 'update']);
+    /**
+     * 🎬 Admin Movie & Genre Management
+     */
+    Route::resource('genres', AdminGenreController::class)->except(['show', 'edit', 'update']); // Manage Genres
+    Route::resource('movies', AdminMovieController::class)->except(['show']); // Full Movie Management (Add, Edit, Delete)
 
-    // 🎥 Movie Management (Full CRUD excluding show)
-    Route::resource('movies', AdminMovieController::class)->except(['show']);
+    /**
+     * ⭐ Review Moderation
+     */
+    Route::resource('reviews', AdminReviewController::class)->only(['index', 'destroy']); // View & Delete Reviews
 
-    // 💬 Comment Moderation (List, Delete, Restore)
-    Route::resource('comments', AdminCommentController::class)->only(['index', 'destroy']);
-    Route::post('comments/{comment}/restore', [AdminCommentController::class, 'restore'])->name('comments.restore');
-
-    // ⭐ Review Moderation (List & Delete only)
-    Route::resource('reviews', AdminReviewController::class)->only(['index', 'destroy']);
+    /**
+     * 💬 Comment Moderation
+     */
+    Route::resource('comments', AdminCommentController::class)->only(['index', 'destroy']); // View & Delete Comments
+    Route::post('comments/{comment}/restore', [AdminCommentController::class, 'restore'])->name('comments.restore'); // Restore deleted comments
 });
 
+
 /**
- * 🔑 Default Authentication Routes (Login, Register, Password, etc.)
+ * 🔑 AUTHENTICATION ROUTES
+ * Includes Login, Register, Forgot Password, Reset, etc.
  */
 require __DIR__ . '/auth.php';

@@ -6,17 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Movie;
 use App\Models\Genre;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AdminMovieController extends Controller
 {
     // ✅ List Movies
     public function index()
     {
-        $movies = Movie::with('genres')->paginate(10);
+        $movies = Movie::with('genres')->latest()->paginate(10);
         return view('admin.movies.index', compact('movies'));
     }
 
-    // ✅ Create Movie Form
+    // ✅ Show Create Movie Form
     public function create()
     {
         $genres = Genre::all();
@@ -26,31 +27,29 @@ class AdminMovieController extends Controller
     // ✅ Store Movie
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
-            'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // ✅ validate image
-            'genres' => 'array',
+            'poster'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'genres'      => 'required|array|min:1',
         ]);
 
-        // ✅ Handle file upload
-        $posterPath = null;
         if ($request->hasFile('poster')) {
-            $posterPath = $request->file('poster')->store('posters', 'public'); // Store in storage/app/public/posters
+            $data['poster'] = $request->file('poster')->store('posters', 'public');
         }
 
         $movie = Movie::create([
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'poster' => $posterPath,
+            'title'       => $data['title'],
+            'description' => $data['description'] ?? null,
+            'poster'      => $data['poster'] ?? null,
         ]);
 
-        $movie->genres()->sync($validated['genres'] ?? []);
+        $movie->genres()->attach($data['genres']);
 
         return redirect()->route('admin.movies.index')->with('success', 'Movie added successfully!');
     }
 
-    // ✅ Edit Movie Form
+    // ✅ Show Edit Form
     public function edit(Movie $movie)
     {
         $genres = Genre::all();
@@ -60,25 +59,30 @@ class AdminMovieController extends Controller
     // ✅ Update Movie
     public function update(Request $request, Movie $movie)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
-            'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'genres' => 'array',
+            'poster'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'genres'      => 'required|array|min:1',
         ]);
 
-        // ✅ Handle updated file upload
+        // Handle new poster upload and delete old one if exists
         if ($request->hasFile('poster')) {
-            $posterPath = $request->file('poster')->store('posters', 'public');
-            $movie->poster = $posterPath;
+            if ($movie->poster && Storage::disk('public')->exists($movie->poster)) {
+                Storage::disk('public')->delete($movie->poster);
+            }
+            $data['poster'] = $request->file('poster')->store('posters', 'public');
         }
 
+        // Update movie data
         $movie->update([
-            'title' => $validated['title'],
-            'description' => $validated['description'],
+            'title'       => $data['title'],
+            'description' => $data['description'] ?? null,
+            'poster'      => $data['poster'] ?? $movie->poster,
         ]);
 
-        $movie->genres()->sync($validated['genres'] ?? []);
+        // Sync genres
+        $movie->genres()->sync($data['genres']);
 
         return redirect()->route('admin.movies.index')->with('success', 'Movie updated successfully!');
     }
@@ -86,7 +90,17 @@ class AdminMovieController extends Controller
     // ✅ Delete Movie
     public function destroy(Movie $movie)
     {
+        // Delete poster file if exists
+        if ($movie->poster && Storage::disk('public')->exists($movie->poster)) {
+            Storage::disk('public')->delete($movie->poster);
+        }
+
+        // Detach genres
+        $movie->genres()->detach();
+
+        // Delete movie
         $movie->delete();
+
         return redirect()->route('admin.movies.index')->with('success', 'Movie deleted successfully.');
     }
 }

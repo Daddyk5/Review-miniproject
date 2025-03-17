@@ -7,16 +7,15 @@ use App\Models\Review;
 
 class AdminReviewController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        // ✅ Paginate instead of get() or all()
-        $reviews = Review::with(['movie', 'user'])->latest()->paginate(10); // 10 per page
-
+        $reviews = Review::with(['user', 'movie'])->latest()->paginate(10); // Shows user + movie
         return view('admin.reviews.index', compact('reviews'));
     }
 
-    // Other methods can remain empty or for future
+    public function destroy(Review $review)
+    {
+        $review->delete();
+        return redirect()->back()->with('success', 'Review deleted successfully.');
+    }
 }

@@ -32,3 +32,11 @@ a:hover {
 h1, h2, h3, h4, h5 {
     font-weight: bold;
 }
+.table-hover tbody tr:hover {
+    background-color: #343a40;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    text-align: center;
+}

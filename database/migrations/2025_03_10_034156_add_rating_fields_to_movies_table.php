@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('movies', function (Blueprint $table) {
-            $table->float('average_rating')->default(0);
-            $table->unsignedInteger('reviews_count')->default(0);
+            $table->float('average_rating')->default(0); // For average rating (out of 5)
+            $table->unsignedInteger('reviews_count')->default(0); // For counting total reviews
         });
     }
 
